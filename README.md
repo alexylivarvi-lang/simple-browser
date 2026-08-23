@@ -32,7 +32,7 @@ Käännetty ohjelma löytyy kansiosta `dist/SimpleBrowser/SimpleBrowser.exe`.
 git init
 git add .
 git commit -m "Initial commit v1.0.0"
-git remote add origin https://github.com/<sinun-kayttajanimi>/simple-browser.git
+git remote add origin https://github.com/alexylivarvi-lang/simple-browser.git
 git branch -M main
 git push -u origin main
 ```

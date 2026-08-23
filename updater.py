@@ -9,8 +9,8 @@ from PyQt6.QtGui import QDesktopServices
 from PyQt6.QtWidgets import QMessageBox
 
 APP_VERSION = "1.0.0"
-# Vaihda tämä omaan GitHub-repoosi, kun julkaiset koodin GitHubiin
-GITHUB_REPO = "alexy/simple-browser"
+# Käyttäjän oma GitHub-repositorio
+GITHUB_REPO = "alexylivarvi-lang/simple-browser"
 
 
 class UpdateCheckThread(QThread):
