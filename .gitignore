@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# PyInstaller / Build
+build/
+dist/
+*.spec
+
+# Käyttäjän paikalliset asetukset ja historia (tallennetaan nykyään %APPDATA%)
+bookmarks.json
+history.json
+settings.json
+
+# IDE & OS
+.vscode/
+.idea/
+*.swp
+*.swo
+Thumbs.db
+Desktop.ini
+.DS_Store
