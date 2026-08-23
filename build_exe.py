@@ -20,7 +20,7 @@ def build():
     cmd = [
         "pyinstaller",
         "--noconfirm",
-        "--onedir",
+        "--onefile",
         "--windowed",
         "--name", "SimpleBrowser",
         "main.py",

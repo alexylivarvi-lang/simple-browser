@@ -32,15 +32,11 @@ jobs:
         run: |
           python build_exe.py
 
-      - name: Compress Release Archive
-        run: |
-          Compress-Archive -Path dist\SimpleBrowser\* -DestinationPath SimpleBrowser-Windows.zip
-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: SimpleBrowser-Windows.zip
+          files: dist/SimpleBrowser.exe
           draft: false
           prerelease: false
           generate_release_notes: true
