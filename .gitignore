@@ -12,6 +12,8 @@ venv/
 build/
 dist/
 *.spec
+*.zip
+*.exe
 
 # Käyttäjän paikalliset asetukset ja historia (tallennetaan nykyään %APPDATA%)
 bookmarks.json

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SimpleBrowser Pro – Moderni, nopea ja kevyt työpöytäselain</title>
     <meta name="description" content="SimpleBrowser Pro on Chromium-pohjainen nopea työpöytäselain sisäänrakennetulla mainosestolla, Speed Dial -aloitussivulla ja yksityisselauksella.">
+    <link rel="icon" type="image/png" href="icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -36,7 +37,6 @@
             overflow-x: hidden;
         }
 
-        /* Taustan hohde-efektit */
         .glow-bg {
             position: fixed;
             top: -200px;
@@ -50,7 +50,6 @@
             filter: blur(80px);
         }
 
-        /* Navigointi */
         header {
             max-width: 1200px;
             margin: 0 auto;
@@ -63,11 +62,17 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             font-weight: 700;
             font-size: 20px;
             color: var(--text-main);
             text-decoration: none;
+        }
+
+        .logo img {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
         }
 
         .logo-badge {
@@ -118,12 +123,25 @@
             border-color: rgba(255, 255, 255, 0.2);
         }
 
-        /* Hero-osio */
         .hero {
             max-width: 900px;
             margin: 60px auto 40px;
             text-align: center;
             padding: 0 20px;
+        }
+
+        .app-icon-hero {
+            width: 96px;
+            height: 96px;
+            border-radius: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 12px 35px rgba(67, 97, 238, 0.35);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
 
         .version-tag {
@@ -162,7 +180,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 16px;
+            gap: 14px;
             flex-wrap: wrap;
         }
 
@@ -172,10 +190,10 @@
             gap: 10px;
             background: linear-gradient(135deg, var(--primary), #5b78ff);
             color: white;
-            padding: 14px 32px;
+            padding: 15px 32px;
             border-radius: 12px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             text-decoration: none;
             box-shadow: 0 8px 24px rgba(67, 97, 238, 0.35);
             transition: all 0.2s;
@@ -193,7 +211,7 @@
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid var(--card-border);
             color: var(--text-main);
-            padding: 14px 26px;
+            padding: 15px 24px;
             border-radius: 12px;
             font-size: 15px;
             font-weight: 600;
@@ -207,12 +225,11 @@
         }
 
         .subtext {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text-muted);
-            margin-top: 12px;
+            margin-top: 14px;
         }
 
-        /* Mockup-ikkuna */
         .browser-mockup {
             max-width: 1050px;
             margin: 60px auto 100px;
@@ -306,7 +323,6 @@
             gap: 6px;
         }
 
-        /* Ominaisuudet */
         .features-section {
             max-width: 1100px;
             margin: 0 auto 100px;
@@ -368,7 +384,6 @@
             line-height: 1.6;
         }
 
-        /* Footer */
         footer {
             border-top: 1px solid var(--card-border);
             padding: 40px 20px;
@@ -394,7 +409,8 @@
 
     <header>
         <a href="#" class="logo">
-            <span>🌐 SimpleBrowser</span>
+            <img src="icon.png" alt="SimpleBrowser Logo">
+            <span>SimpleBrowser</span>
             <span class="logo-badge">Pro</span>
         </a>
         <div class="nav-links">
@@ -407,22 +423,25 @@
 
     <main>
         <section class="hero">
+            <img src="icon.png" alt="SimpleBrowser Icon" class="app-icon-hero">
             <div class="version-tag">✨ Versio 1.0.0 nyt julkaistu Windowsille</div>
             <h1>Moderni, nopea ja yksityinen työpöytäselain</h1>
             <p>SimpleBrowser Pro yhdistää Chromium-renderöinnin keveyteen, sisäänrakennettuun mainosestoon ja tyylikkääseen Speed Dial -aloitussivuun.</p>
             
             <div class="hero-actions">
-                <a href="https://github.com/alexylivarvi-lang/simple-browser/releases/latest/download/SimpleBrowser.exe" class="btn-primary">
-                    ⬇️ Lataa .exe (Suora käynnistys)
+                <a href="https://github.com/alexylivarvi-lang/simple-browser/releases/latest/download/SimpleBrowser-Setup.exe" class="btn-primary">
+                    ⚡ Lataa asennusohjelma (Setup.exe)
+                </a>
+                <a href="https://github.com/alexylivarvi-lang/simple-browser/releases/latest/download/SimpleBrowser.exe" class="btn-secondary">
+                    📦 Suora .exe
                 </a>
                 <a href="https://github.com/alexylivarvi-lang/simple-browser/releases/latest/download/SimpleBrowser-Windows.zip" class="btn-secondary">
-                    🗜️ Lataa .zip (Portable)
+                    🗜️ .zip (Portable)
                 </a>
             </div>
-            <div class="subtext">Windows 10 / 11 • Avoin lähdekoodi • Ei vaadi asennusta</div>
+            <div class="subtext">Windows 10 / 11 • Avoin lähdekoodi • Sisältää automaattiset päivitykset</div>
         </section>
 
-        <!-- Interaktiivinen selainnäkymä -->
         <section class="browser-mockup">
             <div class="mockup-window">
                 <div class="mockup-topbar">
@@ -453,7 +472,6 @@
             </div>
         </section>
 
-        <!-- Ominaisuusruudukko -->
         <section class="features-section" id="features">
             <div class="section-title">
                 <h2>Kaikki mitä tarvitset sujuvaan netin selaamiseen</h2>

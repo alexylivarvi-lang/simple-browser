@@ -1,6 +1,6 @@
 # 🌐 SimpleBrowser Pro (Modern Desktop Browser)
 
-Kevyt, moderni ja monivälilehtinen työpöytäselain Pythonilla ja PyQt6-WebEnginellä (Chromium-renderöinti). Sisältää automaattisen päivitystarkistimen, mainosten eston, sisäänrakennetun aloitussivun ja valmiin julkaisuputken nettiin.
+Kevyt, moderni ja monivälilehtinen työpöytäselain Pythonilla ja PyQt6-WebEnginellä (Chromium-renderöinti). Sisältää tyylikkään sovellusikonin, automaattisen päivitystarkistimen, Inno Setup -asennusohjelman (`Setup.exe`), mainosten eston, sisäänrakennetun aloitussivun ja valmiin julkaisuputken nettiin.
 
 ---
 
@@ -13,11 +13,15 @@ python main.py
 
 ---
 
-## 📦 Kääntäminen itsenäiseksi `.exe` -ohjelmaksi
+## 📦 Kääntäminen ja asennusohjelman luonti
 
-Voit luoda valmiin suoritettavan Windows-ohjelman paikallisesti:
+Voit luoda itsenäisen Windows-ohjelman ja asennusohjelman:
 
 ```powershell
+# 1. Luo sovellusikoni (.ico ja .png)
+python generate_icon.py
+
+# 2. Käännä itsenäinen .exe sovellusikonilla
 python build_exe.py
 ```
 

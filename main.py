@@ -296,6 +296,11 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(f"PyQt6 Moderni Selain Pro (v{APP_VERSION})")
         self.resize(1240, 820)
 
+        # Asetetaan ikkunan kuvake
+        icon_path = os.path.join(os.path.dirname(__file__), "icon.png")
+        if os.path.exists(icon_path):
+            self.setWindowIcon(QIcon(icon_path))
+
         self.bookmarks = self._load_bookmarks()
         self.devtools_window = None
         self.update_manager = UpdateManager(self)
@@ -889,6 +894,10 @@ def main():
     app = QApplication(sys.argv)
     app.setApplicationName("PyQt6 Moderni Selain Pro")
     app.setFont(QFont("Segoe UI", 9))
+    
+    icon_path = os.path.join(os.path.dirname(__file__), "icon.png")
+    if os.path.exists(icon_path):
+        app.setWindowIcon(QIcon(icon_path))
     
     window = MainWindow()
     window.show()
