@@ -22,8 +22,10 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Set up Inno Setup
-        uses: rashil2000/setup-inno-setup@v1
+      - name: Install Inno Setup
+        run: |
+          choco install innosetup --no-progress -y
+          echo "C:\Program Files (x86)\Inno Setup 6" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Install dependencies
         run: |
