@@ -1,10 +1,15 @@
 """
-browser_tab.py - Yksittäisen selainvälilehden komponentti (v3.0 Pro)
+browser_tab.py - Yksittäisen selainvälilehden komponentti (v3.0 Pro + Media Optimization)
 """
 
 from PyQt6.QtCore import QUrl, pyqtSignal
 from PyQt6.QtGui import QAction, QIcon
-from PyQt6.QtWebEngineCore import QWebEnginePage, QWebEngineProfile, QWebEngineSettings
+from PyQt6.QtWebEngineCore import (
+    QWebEngineFullScreenRequest,
+    QWebEnginePage,
+    QWebEngineProfile,
+    QWebEngineSettings,
+)
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import QMenu
 
@@ -12,9 +17,15 @@ from history_manager import HistoryManager
 from new_tab_page import get_new_tab_html
 from settings_dialog import SettingsManager
 
+# Moderni Chrome User-Agent, jotta suoratoistopalvelut (Yle Areena, YouTube, Twitch) toimivat täydellisesti
+CHROME_USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+)
+
 
 class CustomWebEnginePage(QWebEnginePage):
-    """Mukautettu WebEngine-sivu, joka osaa pyytää uuden välilehden avaamista."""
+    """Mukautettu WebEngine-sivu, joka hallitsee oikeudet, välilehdet ja koko ruudun videot."""
     new_tab_requested = pyqtSignal(QUrl)
 
     def __init__(self, profile=None, parent=None):
@@ -22,6 +33,10 @@ class CustomWebEnginePage(QWebEnginePage):
             super().__init__(profile, parent)
         else:
             super().__init__(parent)
+
+        # Automaattinen lupa medialle ja toistolle
+        self.featurePermissionRequested.connect(self._on_feature_permission_requested)
+        self.fullScreenRequested.connect(self._on_fullscreen_requested)
 
     def createWindow(self, window_type: QWebEnginePage.WebWindowType):
         new_view = BrowserTab()
@@ -31,6 +46,17 @@ class CustomWebEnginePage(QWebEnginePage):
     def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
         # Sivustojen konsolilokit ohjataan F12 DevToolsiin terminaalin sijaan
         pass
+
+    def _on_feature_permission_requested(self, security_origin: QUrl, feature: QWebEnginePage.Feature):
+        # Myönnetään luvat suoratoistolle, kameralle/mikrofonille ja medialle
+        self.setFeaturePermission(
+            security_origin,
+            feature,
+            QWebEnginePage.PermissionPolicy.PermissionGrantedByUser,
+        )
+
+    def _on_fullscreen_requested(self, request: QWebEngineFullScreenRequest):
+        request.accept()
 
 
 class BrowserTab(QWebEngineView):
@@ -46,7 +72,7 @@ class BrowserTab(QWebEngineView):
         super().__init__(parent)
         self.is_incognito = is_incognito
         
-        # Jos kyseessä on yksityinen välilehti, luodaan erillinen in-memory (off-the-record) profiili
+        # Profiilin alustus
         if self.is_incognito:
             self._profile = QWebEngineProfile(self)
             custom_page = CustomWebEnginePage(self._profile, self)
@@ -54,9 +80,12 @@ class BrowserTab(QWebEngineView):
             self._profile = QWebEngineProfile.defaultProfile()
             custom_page = CustomWebEnginePage(None, self)
 
+        # Asetetaan standardi Chrome User-Agent videotoiston yhteensopivuudelle
+        self._profile.setHttpUserAgent(CHROME_USER_AGENT)
+
         self.setPage(custom_page)
         
-        # Määritetään selainmoottorin asetukset
+        # Määritetään selainmoottorin ja videotoiston asetukset
         self.apply_settings()
 
         # Linkin leijunnan tilarivisignaali (hover)
@@ -75,7 +104,7 @@ class BrowserTab(QWebEngineView):
         self._zoom_factor = 1.0
 
     def apply_settings(self):
-        """Päivitä asetukset settings.jsonin pohjalta."""
+        """Päivitä asetukset ja optimoi videotoisto (HTML5, WebGL, Fullscreen)."""
         app_settings = SettingsManager.load_settings()
         js_enabled = app_settings.get("javascript_enabled", True)
 
@@ -86,6 +115,14 @@ class BrowserTab(QWebEngineView):
         settings.setAttribute(QWebEngineSettings.WebAttribute.FullScreenSupportEnabled, True)
         settings.setAttribute(QWebEngineSettings.WebAttribute.PluginsEnabled, True)
         settings.setAttribute(QWebEngineSettings.WebAttribute.DnsPrefetchEnabled, True)
+        
+        # Video & Media -optimoinnit
+        settings.setAttribute(QWebEngineSettings.WebAttribute.PlaybackRequiresUserGesture, False)
+        settings.setAttribute(QWebEngineSettings.WebAttribute.WebGLEnabled, True)
+        settings.setAttribute(QWebEngineSettings.WebAttribute.Accelerated2dCanvasEnabled, True)
+        settings.setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True)
+        settings.setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True)
+        settings.setAttribute(QWebEngineSettings.WebAttribute.AutoLoadImages, True)
 
     def _on_link_hovered(self, url: str):
         self.status_message_changed.emit(url)
@@ -122,10 +159,8 @@ class BrowserTab(QWebEngineView):
         if target.startswith(("http://", "https://", "file://", "about:", "chrome://")):
             url = QUrl(target)
         elif "." in target and " " not in target:
-            # Oletetaan verkkotunnukseksi (esim. yle.fi, google.com)
             url = QUrl("https://" + target)
         else:
-            # Hakukysely valitulla hakukoneella
             template = SettingsManager.get_search_url_template()
             query = QUrl.toPercentEncoding(target).data().decode('utf-8')
             url = QUrl(template.replace("{query}", query))
@@ -156,7 +191,6 @@ class BrowserTab(QWebEngineView):
         """Tallentaa sivun PDF-tiedostoksi."""
         if callback:
             self.page().printToPdf(file_path)
-            # printToPdf kutsuu callbackia tulostuksen valmistuttua
             callback(file_path)
         else:
             self.page().printToPdf(file_path)
@@ -181,7 +215,6 @@ class BrowserTab(QWebEngineView):
         menu = self.createStandardContextMenu()
         menu.addSeparator()
 
-        # Äänen mykistys
         is_muted = self.page().isAudioMuted()
         mute_text = "🔊 Poista mykistys" if is_muted else "🔇 Mykistä välilehti"
         mute_action = menu.addAction(mute_text)

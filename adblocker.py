@@ -32,7 +32,6 @@ DEFAULT_BLOCKED_DOMAINS = {
     # Seuranta & telemetria
     "google-analytics.com",
     "analytics.google.com",
-    "scorecardresearch.com",
     "hotjar.com",
     "facebook.net",
     "connect.facebook.net",
@@ -44,9 +43,25 @@ DEFAULT_BLOCKED_DOMAINS = {
     "matomo.cloud",
 }
 
+# Sallitut suoratoisto- ja mediatoimittajat (Whitelist, jotta videotoisto ei esty)
+MEDIA_WHITELIST = {
+    "yle.fi",
+    "yle.cloud",
+    "areena.yle.fi",
+    "player.yle.fi",
+    "kaltura.com",
+    "akamaihd.net",
+    "akamaized.net",
+    "cloudfront.net",
+    "fastly.net",
+    "youtube.com",
+    "googlevideo.com",
+    "ytimg.com",
+}
+
 
 class AdBlockInterceptor(QWebEngineUrlRequestInterceptor):
-    """Sieppaa ja estää mainos- sekä seurantapyynnöt."""
+    """Sieppaa ja estää mainos- sekä seurantapyynnöt suoratoistoa häiritsemättä."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -59,8 +74,17 @@ class AdBlockInterceptor(QWebEngineUrlRequestInterceptor):
         if not self.enabled:
             return
 
-        url = info.requestUrl().toString().lower()
         host = info.requestUrl().host().lower()
+        first_party = info.firstPartyUrl().host().lower()
+
+        # Jos kyseessä on sallittu mediapalvelu tai sen alidomaini, ei estetä suoratoistoa
+        for allowed in MEDIA_WHITELIST:
+            if host == allowed or host.endswith("." + allowed):
+                return
+            if first_party == allowed or first_party.endswith("." + allowed):
+                # Sallitaan videotoiston sisäiset kutsut
+                if "video" in host or "stream" in host or "media" in host or "player" in host:
+                    return
 
         # Tarkistetaan kuuluuko palvelin estolistalle
         is_blocked = False
@@ -73,7 +97,7 @@ class AdBlockInterceptor(QWebEngineUrlRequestInterceptor):
             info.block(True)
             self.blocked_count += 1
             if self.on_blocked_callback:
-                self.on_blocked_callback(self.blocked_count, url)
+                self.on_blocked_callback(self.blocked_count, info.requestUrl().toString())
 
     def toggle(self) -> bool:
         """Kytkee mainoseston päälle/pois."""
