@@ -25,7 +25,6 @@ WizardStyle=modern
 UninstallDisplayIcon={app}\{#MyAppExeName}
 
 [Languages]
-Name: "finnish"; MessagesFile: "compiler:Languages\Finnish.isl"
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]

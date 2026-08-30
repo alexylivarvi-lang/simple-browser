@@ -38,6 +38,7 @@ def build():
         print("==========================================\n")
     else:
         print("\n[VIRHE] Kaannos epaonnistui virhekoodilla:", result.returncode)
+        sys.exit(result.returncode)
 
 
 if __name__ == "__main__":

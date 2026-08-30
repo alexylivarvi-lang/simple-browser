@@ -8,7 +8,7 @@ from PyQt6.QtCore import QThread, QUrl, pyqtSignal
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.QtWidgets import QMessageBox
 
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.0.2"
 # Käyttäjän oma GitHub-repositorio
 GITHUB_REPO = "alexylivarvi-lang/simple-browser"
 
