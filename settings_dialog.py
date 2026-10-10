@@ -112,6 +112,30 @@ class SettingsDialog(QDialog):
 
         layout.addLayout(form_layout)
 
+        # Tekoälyavustajan asetukset
+        ai_group = QGroupBox("✨ Tekoälyavustajan asetukset (AI Sidebar)")
+        ai_layout = QFormLayout(ai_group)
+
+        self.ai_provider_combo = QComboBox()
+        self.ai_provider_combo.addItem("Sisäänrakennettu (Paikallinen)", "local")
+        self.ai_provider_combo.addItem("Ollama (http://localhost:11434)", "ollama")
+        self.ai_provider_combo.addItem("Google Gemini API", "gemini")
+        self.ai_provider_combo.addItem("OpenAI API", "openai")
+
+        curr_provider = self.settings.get("ai_provider", "local")
+        idx = self.ai_provider_combo.findData(curr_provider)
+        if idx >= 0:
+            self.ai_provider_combo.setCurrentIndex(idx)
+        ai_layout.addRow("Tekoälymoottori:", self.ai_provider_combo)
+
+        self.ai_key_input = QLineEdit()
+        self.ai_key_input.setEchoMode(QLineEdit.EchoMode.Password)
+        self.ai_key_input.setPlaceholderText("Valinnainen API-avain (Gemini/OpenAI)...")
+        self.ai_key_input.setText(self.settings.get("ai_api_key", ""))
+        ai_layout.addRow("API-avain:", self.ai_key_input)
+
+        layout.addWidget(ai_group)
+
         # Versio & Päivitys -osio
         update_group = QGroupBox("Tietoja ja päivitykset")
         update_layout = QHBoxLayout(update_group)
@@ -138,6 +162,8 @@ class SettingsDialog(QDialog):
         self.settings["home_url"] = self.home_input.text().strip() or DEFAULT_SETTINGS["home_url"]
         self.settings["theme"] = self.theme_combo.currentText()
         self.settings["javascript_enabled"] = self.js_checkbox.isChecked()
+        self.settings["ai_provider"] = self.ai_provider_combo.currentData()
+        self.settings["ai_api_key"] = self.ai_key_input.text().strip()
 
         SettingsManager.save_settings(self.settings)
         self.settings_saved.emit()

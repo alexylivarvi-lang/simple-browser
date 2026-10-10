@@ -21,6 +21,7 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QProgressBar,
     QPushButton,
+    QSplitter,
     QStatusBar,
     QTabBar,
     QTabWidget,
@@ -30,6 +31,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from ai_sidebar import AISidebar
 from adblocker import AdBlockInterceptor
 from app_paths import get_bookmarks_file
 from browser_tab import BrowserTab
@@ -411,6 +413,13 @@ class MainWindow(QMainWindow):
         self.settings_btn.clicked.connect(self._open_settings_dialog)
         self.nav_toolbar.addWidget(self.settings_btn)
 
+        # Tekoälyavustaja (Ctrl+Space)
+        self.ai_btn = QToolButton()
+        self.ai_btn.setText("✨ AI")
+        self.ai_btn.setToolTip("Avaa Tekoälyavustaja (Ctrl+Välilyönti)")
+        self.ai_btn.clicked.connect(self.toggle_ai_sidebar)
+        self.nav_toolbar.addWidget(self.ai_btn)
+
         # Uusi välilehti (+)
         self.new_tab_btn = QToolButton()
         self.new_tab_btn.setText("➕")
@@ -432,7 +441,7 @@ class MainWindow(QMainWindow):
         self.progress_bar.hide()
         self.main_layout.addWidget(self.progress_bar)
 
-        # 4. Välilehtinäkymä
+        # 4. Keskinäkymä: Välilehdet ja Tekoäly-sivupaneeli (Splitter)
         self.tab_widget = QTabWidget()
         self.tab_widget.setDocumentMode(True)
         self.tab_widget.setTabsClosable(True)
@@ -444,7 +453,17 @@ class MainWindow(QMainWindow):
         self.tab_widget.tabBar().setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.tab_widget.tabBar().customContextMenuRequested.connect(self._show_tab_context_menu)
         
-        self.main_layout.addWidget(self.tab_widget)
+        self.splitter = QSplitter(Qt.Orientation.Horizontal)
+        self.splitter.addWidget(self.tab_widget)
+
+        self.ai_sidebar = AISidebar(self)
+        self.ai_sidebar.close_requested.connect(self.toggle_ai_sidebar)
+        self.ai_sidebar.hide()
+        self.splitter.addWidget(self.ai_sidebar)
+
+        self.splitter.setStretchFactor(0, 1)
+        self.splitter.setStretchFactor(1, 0)
+        self.main_layout.addWidget(self.splitter)
 
         # 5. Sivun sisäinen haku (FindBar)
         self.find_bar = FindBar(self)
@@ -525,8 +544,22 @@ class MainWindow(QMainWindow):
         QShortcut(QKeySequence("Ctrl+-"), self).activated.connect(self._zoom_out)
         QShortcut(QKeySequence("Ctrl+0"), self).activated.connect(self._reset_zoom)
 
+        # Tekoälyavustaja (Ctrl+Välilyönti)
+        QShortcut(QKeySequence("Ctrl+Space"), self).activated.connect(self.toggle_ai_sidebar)
+
     def current_tab(self) -> BrowserTab:
         return self.tab_widget.currentWidget()
+
+    def get_current_tab(self) -> BrowserTab:
+        return self.current_tab()
+
+    def toggle_ai_sidebar(self):
+        """Kytkee tekoälysivupaneelin näkyvyyden päälle/pois."""
+        if self.ai_sidebar.isVisible():
+            self.ai_sidebar.hide()
+        else:
+            self.ai_sidebar.show()
+            self.ai_sidebar.input_field.setFocus()
 
     def add_new_tab(self, qurl: QUrl = None, title: str = "Uusi välilehti", is_incognito: bool = False) -> int:
         tab = BrowserTab(is_incognito=is_incognito, parent=self)

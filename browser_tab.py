@@ -167,6 +167,11 @@ class BrowserTab(QWebEngineView):
 
         self.setUrl(url)
 
+    def extract_page_text(self, callback):
+        """Poimii sivun tekstisisallon asynkronisesti JavaScriptilla."""
+        js = "document.body ? document.body.innerText : '';"
+        self.page().runJavaScript(js, callback)
+
     def search_in_page(self, query: str, case_sensitive: bool = False, backward: bool = False):
         """Etsi tekstiä sivulta."""
         if not query:
