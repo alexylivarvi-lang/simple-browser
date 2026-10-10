@@ -42,7 +42,12 @@ class SmartTextAnalyzer:
         # Valitaan edustavia lauseita (alku, keskiosa, loppu)
         count = min(len(valid_sentences), max_points)
         step = max(1, len(valid_sentences) // count)
-        selected = [valid_sentences[i * step] for i in range(count)]
+        indices = [min(i * step, len(valid_sentences) - 1) for i in range(count)]
+        selected = []
+        for idx in indices:
+            sentence = valid_sentences[idx]
+            if sentence not in selected:
+                selected.append(sentence)
 
         result = ["### 📄 Sivun pääkohdat ja tiivistelmä:\n"]
         for idx, s in enumerate(selected, 1):

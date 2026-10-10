@@ -2,6 +2,7 @@
 ai_sidebar.py - SimpleBrowserin Tekoäly-sivupaneeli (AI Sidebar)
 """
 
+import html
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon
 from PyQt6.QtWidgets import (
@@ -178,6 +179,11 @@ class AISidebar(QWidget):
         self._fetch_active_page_and_run("chat", text)
 
     def _fetch_active_page_and_run(self, mode: str, prompt: str):
+        # Pysäytetään edellinen taustasäie jos se on vielä käynnissä
+        if self.worker and self.worker.isRunning():
+            self.worker.terminate()
+            self.worker.wait()
+
         self._set_loading(True, "🤖 Luetaan sivun sisältöä...")
 
         # Pyydetään aktiiviselta välilehdeltä sivun teksti
@@ -188,8 +194,9 @@ class AISidebar(QWidget):
             return
 
         def on_text_extracted(page_text: str):
+            safe_text = page_text if page_text else ""
             self._set_loading(True, "🤖 Analysoidaan tekstiä...")
-            self._start_worker(mode, prompt, page_text)
+            self._start_worker(mode, prompt, safe_text)
 
         current_tab.extract_page_text(on_text_extracted)
 
@@ -208,18 +215,17 @@ class AISidebar(QWidget):
         self._add_chat_bubble("ai", f"❌ {err_msg}")
 
     def _add_chat_bubble(self, sender: str, text: str):
-        current_html = self.chat_display.toHtml()
-        
         if sender == "user":
+            safe_text = html.escape(text)
             bubble = f"""
             <div style="margin: 8px 0; text-align: right;">
                 <span style="background-color: #4361ee; color: white; padding: 6px 12px; border-radius: 12px; display: inline-block; font-size: 13px;">
-                    {text}
+                    {safe_text}
                 </span>
             </div>
             """
         else:
-            # Muutetaan markdown perus HTML-muotoon
+            # Muutetaan rivinvaihdot HTML-muotoon
             formatted_text = text.replace("\n", "<br>")
             bubble = f"""
             <div style="margin: 8px 0; background-color: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); padding: 10px; border-radius: 10px; color: #f1f5f9; font-size: 13px;">

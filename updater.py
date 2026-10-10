@@ -75,7 +75,8 @@ class DownloadWorker(QThread):
         try:
             req = urllib.request.Request(self.url, headers={"User-Agent": "SimpleBrowser-Downloader"})
             with urllib.request.urlopen(req, timeout=30) as resp:
-                total_size = resp.length or 0
+                content_length = resp.headers.get("Content-Length")
+                total_size = int(content_length) if content_length and content_length.isdigit() else 0
                 downloaded = 0
                 chunk_size = 64 * 1024
 
