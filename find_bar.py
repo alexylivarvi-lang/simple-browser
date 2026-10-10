@@ -3,12 +3,10 @@ find_bar.py - Sivun sisäinen haku (Find in Page, Ctrl+F)
 """
 
 from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QKeySequence, QShortcut
 from PyQt6.QtWidgets import (
     QCheckBox,
     QHBoxLayout,
     QLineEdit,
-    QPushButton,
     QToolButton,
     QWidget,
 )

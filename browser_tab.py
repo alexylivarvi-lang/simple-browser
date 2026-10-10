@@ -3,7 +3,6 @@ browser_tab.py - Yksittäisen selainvälilehden komponentti (v3.0 Pro + Media Op
 """
 
 from PyQt6.QtCore import QUrl, pyqtSignal
-from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtWebEngineCore import (
     QWebEngineFullScreenRequest,
     QWebEnginePage,
@@ -11,7 +10,6 @@ from PyQt6.QtWebEngineCore import (
     QWebEngineSettings,
 )
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-from PyQt6.QtWidgets import QMenu
 
 from history_manager import HistoryManager
 from new_tab_page import get_new_tab_html

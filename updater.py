@@ -126,7 +126,7 @@ class UpdateManager:
         
         btn_update = msg_box.addButton("⚡ Päivitä automaattisesti", QMessageBox.ButtonRole.AcceptRole)
         btn_browser = msg_box.addButton("🌐 Avaa lataussivu", QMessageBox.ButtonRole.ActionRole)
-        btn_later = msg_box.addButton("Myöhemmin", QMessageBox.ButtonRole.RejectRole)
+        msg_box.addButton("Myöhemmin", QMessageBox.ButtonRole.RejectRole)
 
         msg_box.exec()
         clicked = msg_box.clickedButton()

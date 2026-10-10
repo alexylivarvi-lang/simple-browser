@@ -6,24 +6,20 @@ import json
 import os
 import sys
 from PyQt6.QtCore import QSize, Qt, QUrl, qInstallMessageHandler, QtMsgType
-from PyQt6.QtGui import QAction, QFont, QIcon, QKeySequence, QShortcut
+from PyQt6.QtGui import QFont, QIcon, QKeySequence, QShortcut
 from PyQt6.QtWebEngineCore import QWebEngineDownloadRequest, QWebEngineProfile
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import (
     QApplication,
     QFileDialog,
-    QHBoxLayout,
     QInputDialog,
     QLabel,
     QLineEdit,
     QMainWindow,
     QMenu,
-    QMessageBox,
     QProgressBar,
-    QPushButton,
     QSplitter,
     QStatusBar,
-    QTabBar,
     QTabWidget,
     QToolBar,
     QToolButton,
@@ -36,7 +32,7 @@ from adblocker import AdBlockInterceptor
 from app_paths import get_bookmarks_file
 from browser_tab import BrowserTab
 from find_bar import FindBar
-from history_manager import HistoryDialog, HistoryManager
+from history_manager import HistoryDialog
 from settings_dialog import SettingsDialog, SettingsManager
 from updater import APP_VERSION, UpdateManager
 
@@ -593,7 +589,10 @@ class MainWindow(QMainWindow):
             if widget:
                 widget.deleteLater()
         else:
-            self.current_tab().load_speed_dial()
+            tab = self.current_tab()
+            if tab:
+                tab.load_speed_dial()
+                self.url_bar.setText("")
 
     def _on_tabbar_double_clicked(self, index: int):
         if index == -1:

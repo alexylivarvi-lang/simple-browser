@@ -3,14 +3,13 @@ ai_sidebar.py - SimpleBrowserin Tekoäly-sivupaneeli (AI Sidebar)
 """
 
 import html
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QFont, QIcon
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QLineEdit,
     QPushButton,
-    QScrollArea,
     QTextBrowser,
     QVBoxLayout,
     QWidget,

@@ -2,7 +2,6 @@
 new_tab_page.py - Moderni sisäänrakennettu aloitussivu (Speed Dial Dashboard)
 """
 
-import json
 from settings_dialog import SettingsManager
 
 

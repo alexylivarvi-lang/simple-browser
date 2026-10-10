@@ -5,7 +5,7 @@ history_manager.py - Selaushistorian hallinta ja graafinen historia-dialogi (%AP
 from datetime import datetime
 import json
 import os
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import (
     QDialog,
     QHBoxLayout,

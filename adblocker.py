@@ -2,7 +2,6 @@
 adblocker.py - Mainosten ja seurannan esto (AdBlock & Tracker Shield)
 """
 
-from PyQt6.QtCore import QObject, QUrl, pyqtSignal
 from PyQt6.QtWebEngineCore import QWebEngineUrlRequestInfo, QWebEngineUrlRequestInterceptor
 
 
